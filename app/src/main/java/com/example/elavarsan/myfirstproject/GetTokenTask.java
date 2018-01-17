@@ -33,9 +33,9 @@ public class GetTokenTask extends AsyncTask<Void, Void, Void> {
     protected String fetchToken() throws IOException {
         String accessToken;
         try {
-            accessToken = GoogleAuthUtil.getToken(mActivity, mAccount, mScope);
-            GoogleAuthUtil.clearToken (mActivity, accessToken); // used to remove stale tokens.
-            accessToken = GoogleAuthUtil.getToken(mActivity, mAccount, mScope);
+            accessToken = GoogleAuthUtil.getToken(mActivity, String.valueOf(mAccount), mScope);
+            GoogleAuthUtil.invalidateToken (mActivity, accessToken); // used to remove stale tokens.
+            accessToken = GoogleAuthUtil.getToken(mActivity, String.valueOf(mAccount), mScope);
             return accessToken;
         } catch (UserRecoverableAuthException userRecoverableException) {
             mActivity.startActivityForResult(userRecoverableException.getIntent(), mRequestCode);

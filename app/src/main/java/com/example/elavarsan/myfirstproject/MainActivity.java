@@ -3,7 +3,6 @@ package com.example.elavarsan.myfirstproject;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,7 +29,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.vision.v1.Vision;
-import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.AnnotateImageRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
@@ -59,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button selectImageButton = (Button) findViewById(R.id
-                .select_image_button);
+        Button selectImageButton = (Button) findViewById(R.id.select_image_button);
         selectedImage = (ImageView) findViewById(R.id.selected_image);
         resultTextView = (TextView) findViewById(R.id.result);
 
@@ -111,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                         mAccount = account;
                         break;
                     }
-
                 }
                 getAuthToken();
             } else if (resultCode == RESULT_CANCELED) {
@@ -144,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         resultTextView.setText("Retrieving results from cloud");
 
@@ -154,10 +149,10 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
                     HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
-                    JsonFactory jsonFactory = gsonFactory.getDefaultInstance();
+                    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
                     Vision.Builder builder = new Vision.Builder
                             (httpTransport, jsonFactory, credential);
-                     builder.setVisionRequestInitializer(new VisionRequestInitializer("AIzaSyAwpV7HZ4IXXFHnensCwY_0SSMSy8J9jag"));
                     Vision vision = builder.build();
 
                     List<Feature> featureList = new ArrayList<>();
@@ -189,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Vision.Images.Annotate annotateRequest =
                             vision.images().annotate(batchAnnotateImagesRequest);
+                    // Due to a bug: requests to Vision API containing large images fail when GZipped.
                     annotateRequest.setDisableGZipContent(true);
                     Log.d(LOG_TAG, "sending request");
 
@@ -208,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.execute();
     }
+
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
         StringBuilder message = new StringBuilder("Results:\n\n");
         message.append("Labels:\n");
@@ -234,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             message.append("nothing\n");
         }
+
         message.append("Landmarks:\n");
         List<EntityAnnotation> landmarks = response.getResponses().get(0)
                 .getLandmarkAnnotations();
@@ -279,12 +277,14 @@ public class MainActivity extends AppCompatActivity {
         image.encodeContent(imageBytes);
         return image;
     }
+
     private void pickUserAccount() {
         String[] accountTypes = new String[]{GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE};
         Intent intent = AccountPicker.newChooseAccountIntent(null, null,
                 accountTypes, false, null, null, null, null);
         startActivityForResult(intent, REQUEST_CODE_PICK_ACCOUNT);
     }
+
     private void getAuthToken() {
         String SCOPE = "oauth2:https://www.googleapis.com/auth/cloud-platform";
         if (mAccount == null) {
@@ -294,14 +294,9 @@ public class MainActivity extends AppCompatActivity {
                     .execute();
         }
     }
+
     public void onTokenReceived(String token){
         accessToken = token;
         launchImagePicker();
     }
 }
-
-
-
-
-
-
