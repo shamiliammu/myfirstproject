@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int RECORD_REQUEST_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
 
-    private static final String CLOUD_VISION_API_KEY = "AIzaSyA40SjWGfxwULJNqVjkVvw3rSgWLNTc4m0";
+    private static final String CLOUD_VISION_API_KEY = "AIzaSyAwpV7HZ4IXXFHnensCwY_0SSMSy8J9jag";
 
     @BindView(R.id.takePicture)
     Button takePicture;
@@ -182,11 +182,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
                     return convertResponseToString(response);
                 } catch (GoogleJsonResponseException e) {
-                    Log.d(TAG, "failed to make API request because " + e.getContent());
+                    Log.d(TAG, "failed to connect because " + e.getContent());
                 } catch (IOException e) {
-                    Log.d(TAG, "failed to make API request because of other IOException " + e.getMessage());
+                    Log.d(TAG, "failed to connect because of other IOException " + e.getMessage());
                 }
-                return "Cloud Vision API request failed. Check logs for details.";
+                return "Request failed. Check logs for details.";
             }
 
             protected void onPostExecute(String result) {
