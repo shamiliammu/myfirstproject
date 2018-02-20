@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -71,9 +72,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @BindView(R.id.visionAPIData)
     TextView visionAPIData;
+
+    @BindView(R.id.background)
+    ScrollView backGroundColor;
+
     private Feature feature;
     private Bitmap bitmap;
-    private String[] visionAPI = new String[]{"LANDMARK_DETECTION", "LOGO_DETECTION", "SAFE_SEARCH_DETECTION", "IMAGE_PROPERTIES", "LABEL_DETECTION"};
+    //    private String[] visionAPI = new String[]{"LANDMARK_DETECTION", "LOGO_DETECTION", "SAFE_SEARCH_DETECTION", "IMAGE_PROPERTIES", "LABEL_DETECTION"};
+    private String[] visionAPI = new String[]{"SAFE_SEARCH_DETECTION"};
 
     private String api = visionAPI[0];
 
@@ -243,6 +249,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private String getImageAnnotation(SafeSearchAnnotation annotation) {
+
+        if (annotation.getViolence().equals("POSSIBLE") || annotation.getViolence().equals("LIKELY") ||
+                annotation.getViolence().equals("VERY_LIKELY")) {
+            backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_red_dark));
+        } else {
+            backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_green_light));
+        }
+
         return String.format("adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
                 annotation.getAdult(),
                 annotation.getMedical(),
