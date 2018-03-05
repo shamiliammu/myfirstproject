@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Feature feature;
     private Bitmap bitmap;
     //    private String[] visionAPI = new String[]{"LANDMARK_DETECTION", "LOGO_DETECTION", "SAFE_SEARCH_DETECTION", "IMAGE_PROPERTIES", "LABEL_DETECTION"};
-    private String[] visionAPI = new String[]{"SAFE_SEARCH_DETECTION"};
+//    private String[] visionAPI = new String[]{"SAFE_SEARCH_DETECTION"};
+    private String[] visionAPI = new String[]{"LABEL_DETECTION"};
 
     private String api = visionAPI[0];
 
@@ -286,6 +287,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (EntityAnnotation entity : entityAnnotation) {
                 message = message + "    " + entity.getDescription() + " " + entity.getScore();
                 message += "\n";
+
+                if (entity.getDescription().equalsIgnoreCase("knife")
+                        ||entity.getDescription().equalsIgnoreCase("weapon")
+                        ||entity.getDescription().equalsIgnoreCase("hardware")
+                        ||entity.getDescription().equalsIgnoreCase("cold weapon")) {
+                    COLOR = 1;
+                }
             }
         } else {
             message = "Nothing Found";
