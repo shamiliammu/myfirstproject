@@ -55,9 +55,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TAG = "MainActivity";
     private static final int RECORD_REQUEST_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
-
     private static final String CLOUD_VISION_API_KEY = "AIzaSyAwpV7HZ4IXXFHnensCwY_0SSMSy8J9jag";
-
+    private static int COLOR = 0;
     @BindView(R.id.takePicture)
     Button takePicture;
 
@@ -196,6 +195,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
 
             protected void onPostExecute(String result) {
+                if (COLOR == 1) {
+                    backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_red_dark));
+                } else {
+                    backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_green_light));
+                }
                 visionAPIData.setText(result);
                 imageUploadProgress.setVisibility(View.INVISIBLE);
             }
@@ -250,11 +254,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private String getImageAnnotation(SafeSearchAnnotation annotation) {
 
+
         if (annotation.getViolence().equals("POSSIBLE") || annotation.getViolence().equals("LIKELY") ||
                 annotation.getViolence().equals("VERY_LIKELY")) {
-            backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_red_dark));
+            COLOR = 1;
         } else {
-            backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_green_light));
+            COLOR = 0;
         }
 
         return String.format("adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
