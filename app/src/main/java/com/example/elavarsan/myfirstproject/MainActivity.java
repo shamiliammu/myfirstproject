@@ -198,8 +198,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             protected void onPostExecute(String result) {
                 if (COLOR == 1) {
                     backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_red_dark));
+                    COLOR = 0;
                 } else {
                     backGroundColor.setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_green_light));
+                    COLOR = 0;
                 }
                 visionAPIData.setText(result);
                 imageUploadProgress.setVisibility(View.INVISIBLE);
